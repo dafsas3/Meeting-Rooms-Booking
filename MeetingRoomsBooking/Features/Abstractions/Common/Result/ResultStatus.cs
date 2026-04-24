@@ -6,6 +6,7 @@
         Created,
         Conflict,
         BadRequest,
-        NotFound
+        NotFound,
+        Unauthorized
     }
 }
