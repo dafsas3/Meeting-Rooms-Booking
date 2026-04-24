@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.26">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.26">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Bookings\Application\Abstractions\Repositories\" />
+    <Folder Include="Features\Bookings\Application\Abstractions\Queries\" />
+    <Folder Include="Features\Bookings\Application\Errors\" />
+    <Folder Include="Features\Bookings\Application\Commands\" />
+    <Folder Include="Features\Bookings\Application\Queries\" />
+    <Folder Include="Features\Bookings\Application\Services\" />
+    <Folder Include="Features\Bookings\Domain\Entities\" />
+    <Folder Include="Features\Bookings\Domain\Ids\" />
+    <Folder Include="Features\Bookings\Domain\ValueObjects\" />
+    <Folder Include="Features\Bookings\Domain\Enums\" />
+    <Folder Include="Features\Rooms\Api\Controllers\" />
+    <Folder Include="Features\Rooms\Application\Abstractions\Repositories\" />
+    <Folder Include="Features\Rooms\Application\Abstractions\Queries\" />
+    <Folder Include="Features\Rooms\Application\Errors\" />
+    <Folder Include="Features\Rooms\Application\Queries\" />
+    <Folder Include="Features\Rooms\Application\Services\" />
+    <Folder Include="Features\Rooms\Domain\Enums\" />
+    <Folder Include="Api\" />
+  </ItemGroup>
+
+</Project>
