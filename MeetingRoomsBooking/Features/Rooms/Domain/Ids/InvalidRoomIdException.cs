@@ -4,10 +4,9 @@ namespace MeetingRoomsBooking.Features.Rooms.Domain.Ids
 {
     public sealed class InvalidRoomIdException : DomainException
     {
-        private InvalidRoomIdException(int value, string reason, int statusCode) : base(
+        private InvalidRoomIdException(int value, string reason) : base(
             code: "INVALID_ROOM_ID",
             message: $"Incorrect room ID: \"{value}\". Reason: {reason}.",
-            statusCode: statusCode,
             meta: new Dictionary<string, object?>
             {
                 ["Value"] = value,
@@ -17,6 +16,6 @@ namespace MeetingRoomsBooking.Features.Rooms.Domain.Ids
 
 
         public static InvalidRoomIdException MustBeGreaterThanZero(int value) =>
-            new(value, "The room ID must be greater than zero.", 400);
+            new(value, "The room ID must be greater than zero.");
     }
 }
