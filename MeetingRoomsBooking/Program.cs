@@ -1,3 +1,4 @@
+using MeetingRoomsBooking.Api.Middleware;
 using MeetingRoomsBooking.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthorization();
 

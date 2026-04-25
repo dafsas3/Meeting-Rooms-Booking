@@ -32,12 +32,10 @@
     <Folder Include="Features\Bookings\Domain\Enums\" />
     <Folder Include="Features\Rooms\Api\Controllers\" />
     <Folder Include="Features\Rooms\Application\Abstractions\Repositories\" />
-    <Folder Include="Features\Rooms\Application\Abstractions\Queries\" />
-    <Folder Include="Features\Rooms\Application\Errors\" />
     <Folder Include="Features\Rooms\Application\Queries\" />
     <Folder Include="Features\Rooms\Application\Services\" />
     <Folder Include="Features\Rooms\Domain\Enums\" />
-    <Folder Include="Api\" />
+    <Folder Include="Infrastructure\Persistence\Repositories\" />
   </ItemGroup>
 
 </Project>
