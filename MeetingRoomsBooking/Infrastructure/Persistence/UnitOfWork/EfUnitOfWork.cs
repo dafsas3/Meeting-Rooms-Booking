@@ -1,4 +1,4 @@
-﻿using MeetingRoomsBooking.Features.Persistence.UnitOfWork;
+﻿using MeetingRoomsBooking.Features.Abstractions.Persistence.UnitOfWork;
 using MeetingRoomsBooking.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore.Storage;
 

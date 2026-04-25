@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 
-namespace MeetingRoomsBooking.Features.Persistence.UnitOfWork
+namespace MeetingRoomsBooking.Features.Abstractions.Persistence.UnitOfWork
 {
     public interface IUnitOfWork
     {
