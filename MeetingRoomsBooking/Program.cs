@@ -1,14 +1,23 @@
 using FluentValidation;
 using MeetingRoomsBooking.Api.Middleware;
+using MeetingRoomsBooking.Api.Swagger;
+using MeetingRoomsBooking.Features.Abstractions.Security;
 using MeetingRoomsBooking.Features.Rooms.Application.Commands.CreateRoom;
 using MeetingRoomsBooking.Infrastructure.Data;
+using MeetingRoomsBooking.Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.OperationFilter<UserHeadersOperationFilter>();
+});
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
 
