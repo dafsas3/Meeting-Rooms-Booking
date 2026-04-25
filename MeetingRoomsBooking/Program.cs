@@ -1,4 +1,6 @@
+using FluentValidation;
 using MeetingRoomsBooking.Api.Middleware;
+using MeetingRoomsBooking.Features.Rooms.Application.Commands.CreateRoom;
 using MeetingRoomsBooking.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +14,8 @@ var connectionString = builder.Configuration.GetConnectionString("Default");
 
 builder.Services.AddDbContext<BookingDbContext>(options =>
 options.UseNpgsql(connectionString));
+
+builder.Services.AddValidatorsFromAssemblyContaining<CreateRoomCommandValidator>();
 
 var app = builder.Build();
 
