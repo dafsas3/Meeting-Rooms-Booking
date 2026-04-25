@@ -5,6 +5,22 @@ namespace MeetingRoomsBooking.Features.Rooms.Application.Abstractions.Queries
 {
     public interface IRoomQueries
     {
+
+        /// <summary>
+        /// Checks if a room with the given name exists at the given location.
+        /// </summary>
+        /// 
+        /// <param name="name"> Room name value object.</param>
+        /// <param name="location">Room location value object.</param>
+        /// <param name="ct">Cancellation token.</param>
+        /// 
+        /// <returns>
+        /// True if a room with the same name exists in the given location.
+        /// </returns>
+        /// 
+        /// <remarks>
+        /// Used during room creation to prevent duplicates.
+        /// </remarks>
         Task<bool> IsExistsByNameAndLocationAsync(
             RoomName name,
             RoomLocation location,
