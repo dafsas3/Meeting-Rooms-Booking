@@ -3,6 +3,5 @@
     public sealed record ApiError(
         string Code,
         string Message,
-        int StatusCode,
         object? Details = null);
 }

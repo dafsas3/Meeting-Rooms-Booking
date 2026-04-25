@@ -1,7 +1,7 @@
-﻿using MeetingRoomsBooking.Features.Abstractions.Common.Errors;
+﻿using MeetingRoomsBooking.Api.Problems;
+using MeetingRoomsBooking.Features.Abstractions.Common.Errors;
 using MeetingRoomsBooking.Features.Abstractions.Domain;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 
 namespace MeetingRoomsBooking.Api.Middleware
 {
@@ -28,37 +28,36 @@ namespace MeetingRoomsBooking.Api.Middleware
 
             catch (DomainException ex)
             {
-                var error = new ApiError(ex.Code, ex.Message, ex.StatusCode, ex.Meta);
+                var error = new ApiError(ex.Code, ex.Message, ex.Meta);
 
-                await WriteProblemAsync(ctx, error);
+                await WriteProblemAsync(ctx, error, DomainErrorStatusMapper.Map(ex.Code));
             }
 
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unhandled exception occured");
+                _logger.LogError(ex, "Unhandled exception occurred");
 
                 var error = new ApiError(
                     Code: "INTERNAL_SERVER_ERROR",
-                    Message: "An unexpected error occurred.",
-                    StatusCode: 500);
+                    Message: "An unexpected error occurred.");
 
-                await WriteProblemAsync(ctx, error);
+                await WriteProblemAsync(ctx, error, StatusCodes.Status500InternalServerError);
             }
         }
 
 
-        private static async Task WriteProblemAsync(HttpContext ctx, ApiError error)
+        private static async Task WriteProblemAsync(HttpContext ctx, ApiError error, int statusCode)
         {
             if (ctx.Response.HasStarted)
                 throw new InvalidOperationException("The response has already started.");
 
             ctx.Response.Clear();
-            ctx.Response.StatusCode = error.StatusCode;
-            ctx.Response.ContentType = "application/problem+json";
+            ctx.Response.StatusCode = statusCode;
+            ctx.Response.ContentType = "application/problem+json";  
 
             var problem = new ProblemDetails
             {
-                Status = error.StatusCode,
+                Status = statusCode,
                 Title = error.Message,
                 Detail = error.Message,
                 Type = error.Code
@@ -70,11 +69,7 @@ namespace MeetingRoomsBooking.Api.Middleware
             if (error.Details is not null)
                 problem.Extensions["details"] = error.Details;
 
-            await ctx.Response.WriteAsJsonAsync(problem, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
+            await ctx.Response.WriteAsJsonAsync(problem);
         }
-
     }
 }
