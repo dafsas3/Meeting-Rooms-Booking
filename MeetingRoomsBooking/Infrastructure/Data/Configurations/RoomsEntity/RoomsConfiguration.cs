@@ -12,6 +12,7 @@ namespace MeetingRoomsBooking.Infrastructure.Data.Configurations.RoomsEntity
             entity.Property(r => r.Id).ValueGeneratedOnAdd();
 
             entity.ConfigureValueObjects();
+            entity.ConfigureIndexes();
         }
     }
 }

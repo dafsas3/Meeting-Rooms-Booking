@@ -1,4 +1,4 @@
-﻿using MeetingRoomsBooking.Features.Rooms.Domain.Ids;
+﻿using MeetingRoomsBooking.BuildingBlocks.Domain.Room.RoomId;
 using MeetingRoomsBooking.Features.Rooms.Domain.ValueObjects.RoomCapacity;
 using MeetingRoomsBooking.Features.Rooms.Domain.ValueObjects.RoomLocation;
 using MeetingRoomsBooking.Features.Rooms.Domain.ValueObjects.RoomName;

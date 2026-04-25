@@ -1,6 +1,6 @@
 ﻿using MeetingRoomsBooking.Features.Abstractions.Common.Errors;
 using MeetingRoomsBooking.Features.Abstractions.Common.Result;
-using MeetingRoomsBooking.Features.Persistence.UnitOfWork;
+using MeetingRoomsBooking.Features.Abstractions.Persistence.UnitOfWork;
 using MeetingRoomsBooking.Features.Rooms.Application.Abstractions.Queries;
 using MeetingRoomsBooking.Features.Rooms.Application.Abstractions.Repositories;
 using MeetingRoomsBooking.Features.Rooms.Application.Errors;
