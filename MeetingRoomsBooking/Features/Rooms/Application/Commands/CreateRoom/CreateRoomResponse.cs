@@ -4,7 +4,7 @@
     {
         public required int Id;
         public required string Name;
-        public required int ReqParticipantCount;
+        public required int ReqCapacity;
         public required string Location;
         public required bool IsActive;
     }

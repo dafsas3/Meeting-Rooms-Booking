@@ -2,7 +2,7 @@
 {
     public record CreateRoomCommand(
         string Name,
-        int ReqParticipantCount,
+        int ReqCapacity,
         string Location,
-        bool IsActive);
+        bool IsActive = true);
 }
