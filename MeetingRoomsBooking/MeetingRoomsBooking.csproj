@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="8.6.3" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="8.6.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.26">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -31,11 +33,9 @@
     <Folder Include="Features\Bookings\Domain\ValueObjects\" />
     <Folder Include="Features\Bookings\Domain\Enums\" />
     <Folder Include="Features\Rooms\Api\Controllers\" />
-    <Folder Include="Features\Rooms\Application\Abstractions\Repositories\" />
     <Folder Include="Features\Rooms\Application\Queries\" />
     <Folder Include="Features\Rooms\Application\Services\" />
     <Folder Include="Features\Rooms\Domain\Enums\" />
-    <Folder Include="Infrastructure\Persistence\Repositories\" />
   </ItemGroup>
 
 </Project>
