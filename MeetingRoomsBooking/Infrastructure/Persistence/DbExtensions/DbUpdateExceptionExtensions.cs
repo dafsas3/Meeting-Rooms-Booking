@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MeetingRoomsBooking.Infrastructure.Persistence.DbExtensions
 {
-    public static class DbUpdateExceptionExnetsions
+    public static class DbUpdateExceptionExtensions
     {
-        public static bool TryGetDuplicateName(this DbUpdateException ex, out string? constraintName)
+        public static bool TryGetUniqueConstraintName(this DbUpdateException ex, out string? constraintName)
         {
             constraintName = null;
 
