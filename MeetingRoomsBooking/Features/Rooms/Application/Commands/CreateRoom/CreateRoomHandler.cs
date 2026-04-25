@@ -19,26 +19,42 @@ namespace MeetingRoomsBooking.Features.Rooms.Application.Commands.CreateRoom
         private readonly IRoomQueries _roomQueries;
         private readonly IRoomRepository _roomsRepository;
         private readonly IUnitOfWork _uow;
+        private readonly ILogger<CreateRoomHandler> _logger;
 
         public CreateRoomHandler(
             IRoomQueries roomQueries,
             IUnitOfWork uow,
-            IRoomRepository repository)
+            IRoomRepository repository,
+            ILogger<CreateRoomHandler> logger)
         {
             _roomQueries = roomQueries;
             _uow = uow;
             _roomsRepository = repository;
+            _logger = logger;
         }
 
         public async Task<Result<CreateRoomResponse>> Handle(CreateRoomCommand cmd, CancellationToken ct)
         {
             var preparedCtx = Prepare(cmd);
 
+            _logger.LogInformation(
+                "Creating room. Name: {RoomName}, Location: {RoomLocation}, Capacity: {RoomCapacity}, " +
+                "IsActive: {IsActive}.",
+                preparedCtx.Name.Value,
+                preparedCtx.Location.Value,
+                preparedCtx.Capacity.Value,
+                cmd.IsActive);
+
             if (await _roomQueries.IsExistsByNameAndLocationAsync(
                 preparedCtx.Name,
                 preparedCtx.Location,
                 ct))
             {
+                _logger.LogInformation("Room creation rejected. Duplicate room. Name: {RoomName}, " +
+                    "Location: {RoomLocation}.",
+                    preparedCtx.Name.Value,
+                    preparedCtx.Location.Value);
+
                 var error = ToApiError(preparedCtx.Name.Value, preparedCtx.Location.Value);
                 return Result<CreateRoomResponse>.Conflict(error.Code, error.Message);
             }
@@ -49,6 +65,13 @@ namespace MeetingRoomsBooking.Features.Rooms.Application.Commands.CreateRoom
             try
             {
                 await _uow.SaveChangesAsync(ct);
+
+                _logger.LogInformation("Room created successfully. Id: {RoomId}, Name: {RoomName}, " +
+                    "Location: {RoomLocation}.",
+                    newRoom.Id.Value,
+                    newRoom.Name.Value,
+                    newRoom.Location.Value);
+
                 return Result<CreateRoomResponse>.Created(ToResponse(newRoom));
             }
             
@@ -57,6 +80,12 @@ namespace MeetingRoomsBooking.Features.Rooms.Application.Commands.CreateRoom
             key is DatabaseConstants.UniqueRoomIndexes.RoomNameAndLocation)
             {
                 _uow.ClearTracking();
+
+                _logger.LogWarning("Room creation failed due to unique constraint violation." +
+                    "Constraint: {ConstraintName}, Name: {RoomName}, Location: {RoomLocation}.",
+                    key,
+                    preparedCtx.Name.Value,
+                    preparedCtx.Location.Value);
 
                 var error = ToApiError(preparedCtx.Name.Value, preparedCtx.Location.Value);
 
