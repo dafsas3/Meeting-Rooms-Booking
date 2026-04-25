@@ -1,4 +1,5 @@
 ﻿using MeetingRoomsBooking.Features.Rooms.Application.Abstractions.Queries;
+using MeetingRoomsBooking.Features.Rooms.Domain.ValueObjects.RoomLocation;
 using MeetingRoomsBooking.Features.Rooms.Domain.ValueObjects.RoomName;
 using MeetingRoomsBooking.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -12,8 +13,12 @@ namespace MeetingRoomsBooking.Infrastructure.Persistence.Queries
         public EfRoomQueries(BookingDbContext db) => _db = db;
 
 
-        public async Task<bool> IsExistsByNameAsync(RoomName name, CancellationToken ct)
-            => await _db.Rooms
-            .AnyAsync(r => r.Name == name, ct);
+        public async Task<bool> IsExistsByNameAndLocationAsync(
+            RoomName name,
+            RoomLocation location,
+            CancellationToken ct)
+            => 
+            await _db.Rooms
+            .AnyAsync(r => r.Name == name && r.Location == location, ct);
     }
 }
