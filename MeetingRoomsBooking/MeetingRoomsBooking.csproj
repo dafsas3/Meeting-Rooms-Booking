@@ -23,16 +23,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Bookings\Application\Abstractions\Repositories\" />
-    <Folder Include="Features\Bookings\Application\Errors\" />
     <Folder Include="Features\Bookings\Application\Queries\" />
     <Folder Include="Features\Bookings\Application\Services\" />
-    <Folder Include="Features\Rooms\Api\Controllers\" />
     <Folder Include="Features\Rooms\Application\Queries\" />
     <Folder Include="Features\Rooms\Application\Services\" />
     <Folder Include="Features\Rooms\Domain\Enums\" />
     <Folder Include="Features\Rooms\Domain\Ids\" />
-    <Folder Include="Infrastructure\Persistence\Features\Bookings\Repositories\" />
   </ItemGroup>
 
 </Project>

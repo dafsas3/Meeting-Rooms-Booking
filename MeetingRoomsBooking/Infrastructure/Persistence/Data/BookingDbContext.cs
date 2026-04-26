@@ -12,6 +12,7 @@ namespace MeetingRoomsBooking.Infrastructure.Persistence.Data
 
         public DbSet<Room> Rooms => Set<Room>();
         public DbSet<BookingRequest> BookingRequests => Set<BookingRequest>();
+        public DbSet<BookingHistory> BookingHistories => Set<BookingHistory>();
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
