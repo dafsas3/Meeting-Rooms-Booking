@@ -1,4 +1,5 @@
 ﻿using MeetingRoomsBooking.BuildingBlocks.Domain.Room.RoomId;
+using MeetingRoomsBooking.BuildingBlocks.Domain.ValueObjects.IdempotencyKey;
 using MeetingRoomsBooking.Features.Bookings.Domain.Enums;
 using MeetingRoomsBooking.Features.Bookings.Domain.Ids.BookingRequestId;
 using MeetingRoomsBooking.Features.Bookings.Domain.Ids.UserId;
@@ -14,6 +15,7 @@ namespace MeetingRoomsBooking.Features.Bookings.Domain.Entities
         public BookingRequestId Id { get; private set; }
         public RoomId RoomId { get; private set; }
         public EmployeeId EmployeeId { get; private set; }
+        public IdempotencyKey IdempotencyKey { get; private set; } = null!;
         public TimeSlot TimeSlot { get; private set; } = null!;
         public MeetingPurpose MeetingPurpose { get; private set; } = null!;
         public BookingStatus Status { get; private set; }
@@ -32,7 +34,8 @@ namespace MeetingRoomsBooking.Features.Bookings.Domain.Entities
             TimeSlot timeSlot,
             MeetingPurpose meetingPurpose,
             BookingStatus status,
-            List<ParticipantEmail> participants)
+            List<ParticipantEmail> participants,
+            IdempotencyKey key)
         {
             RoomId = roomId;
             EmployeeId = employeeId;
@@ -40,6 +43,7 @@ namespace MeetingRoomsBooking.Features.Bookings.Domain.Entities
             MeetingPurpose = meetingPurpose;
             Status = status;
             _participants = participants;
+            IdempotencyKey = key;
         }
 
 
@@ -47,10 +51,10 @@ namespace MeetingRoomsBooking.Features.Bookings.Domain.Entities
             RoomId roomId,
             EmployeeId employeeId,
             BookingActorRole role,
-            StatusTransferReason reason,
             TimeSlot time,
             MeetingPurpose purpose,
-            List<ParticipantEmail> emails)
+            List<ParticipantEmail> emails,
+            IdempotencyKey key)
         {
             var entity = new BookingRequest(
                 roomId,
@@ -58,9 +62,12 @@ namespace MeetingRoomsBooking.Features.Bookings.Domain.Entities
                 time,
                 purpose,
                 BookingStatus.Created,
-                emails);
+                emails,
+                key);
 
-            entity.WriteHistory(role, BookingStatus.Draft, reason);
+            entity.WriteHistory(role,
+                BookingStatus.Draft,
+                StatusTransferReason.Create("Reservation created."));
 
             return entity;
         }

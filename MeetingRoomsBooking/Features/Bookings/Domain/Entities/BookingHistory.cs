@@ -8,7 +8,7 @@ namespace MeetingRoomsBooking.Features.Bookings.Domain.Entities
 {
     public sealed class BookingHistory
     {
-        public BookingHistoryId Id { get; private set; } = null!;
+        public BookingHistoryId Id { get; private set; }
         public BookingRequestId BookingRequestId { get; private set; }
         public EmployeeId EmployeeId { get; private set; }
         public BookingActorRole ActorRole { get; private set; }

@@ -1,6 +1,6 @@
 ﻿namespace MeetingRoomsBooking.Features.Bookings.Domain.Ids.BookingHistoryId
 {
-    public sealed record BookingHistoryId
+    public readonly record struct BookingHistoryId
     {
         public int Value { get; }
 
