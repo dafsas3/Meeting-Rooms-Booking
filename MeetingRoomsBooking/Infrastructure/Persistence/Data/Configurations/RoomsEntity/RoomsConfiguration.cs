@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MeetingRoomsBooking.Infrastructure.Data.Configurations.RoomsEntity
+namespace MeetingRoomsBooking.Infrastructure.Persistence.Data.Configurations.RoomsEntity
 {
     public sealed class RoomsConfiguration : IEntityTypeConfiguration<Room>
     {

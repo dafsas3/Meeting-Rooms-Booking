@@ -1,7 +1,7 @@
 ﻿using MeetingRoomsBooking.BuildingBlocks.Domain.Room.RoomId;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MeetingRoomsBooking.Infrastructure.Data.Configurations.Extensions
+namespace MeetingRoomsBooking.Infrastructure.Persistence.Data.Configurations.Extensions
 {
     public static class ConfigurationsExtensions
     {

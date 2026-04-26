@@ -1,4 +1,4 @@
-﻿namespace MeetingRoomsBooking.Infrastructure.Data
+﻿namespace MeetingRoomsBooking.Infrastructure.Persistence.Data
 {
     public static class DatabaseConstants
     {

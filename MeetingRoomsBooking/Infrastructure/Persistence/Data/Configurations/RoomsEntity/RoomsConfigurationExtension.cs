@@ -3,11 +3,12 @@ using MeetingRoomsBooking.Features.Rooms.Domain.Entities;
 using MeetingRoomsBooking.Features.Rooms.Domain.ValueObjects.RoomCapacity;
 using MeetingRoomsBooking.Features.Rooms.Domain.ValueObjects.RoomLocation;
 using MeetingRoomsBooking.Features.Rooms.Domain.ValueObjects.RoomName;
-using MeetingRoomsBooking.Infrastructure.Data.Configurations.Extensions;
+using MeetingRoomsBooking.Infrastructure.Persistence.Data;
+using MeetingRoomsBooking.Infrastructure.Persistence.Data.Configurations.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MeetingRoomsBooking.Infrastructure.Data.Configurations.RoomsEntity
+namespace MeetingRoomsBooking.Infrastructure.Persistence.Data.Configurations.RoomsEntity
 {
     public static class RoomsConfigurationExtension
     {
