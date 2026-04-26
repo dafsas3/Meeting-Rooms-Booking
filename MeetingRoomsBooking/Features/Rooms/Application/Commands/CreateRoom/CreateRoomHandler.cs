@@ -1,7 +1,10 @@
-﻿using MeetingRoomsBooking.Features.Abstractions.Common.Errors;
+﻿using FluentValidation;
+using MeetingRoomsBooking.Features.Abstractions.Common.Errors;
 using MeetingRoomsBooking.Features.Abstractions.Common.Result;
 using MeetingRoomsBooking.Features.Abstractions.Persistence.UnitOfWork;
-using MeetingRoomsBooking.Features.Rooms.Application.Abstractions.Queries;
+using MeetingRoomsBooking.Features.Abstractions.Security;
+using MeetingRoomsBooking.Features.Abstractions.Shared.Queries;
+using MeetingRoomsBooking.Features.Bookings.Application.Commands;
 using MeetingRoomsBooking.Features.Rooms.Application.Abstractions.Repositories;
 using MeetingRoomsBooking.Features.Rooms.Application.Errors;
 using MeetingRoomsBooking.Features.Rooms.Domain.Entities;
@@ -19,22 +22,50 @@ namespace MeetingRoomsBooking.Features.Rooms.Application.Commands.CreateRoom
         private readonly IRoomQueries _roomQueries;
         private readonly IRoomRepository _roomsRepository;
         private readonly IUnitOfWork _uow;
+        private readonly ICurrentUser _user;
+        private readonly IValidator<CreateRoomCommand> _validator;
         private readonly ILogger<CreateRoomHandler> _logger;
 
         public CreateRoomHandler(
             IRoomQueries roomQueries,
             IUnitOfWork uow,
             IRoomRepository repository,
+            ICurrentUser user,
+            IValidator<CreateRoomCommand> validator,
             ILogger<CreateRoomHandler> logger)
         {
             _roomQueries = roomQueries;
             _uow = uow;
             _roomsRepository = repository;
             _logger = logger;
+            _validator = validator;
+            _user = user;
         }
 
         public async Task<Result<CreateRoomResponse>> Handle(CreateRoomCommand cmd, CancellationToken ct)
         {
+            var validation = await _validator.ValidateAsync(cmd, ct);
+            if (!validation.IsValid)
+            {
+                var firstError = validation.Errors.First();
+
+                _logger.LogWarning("Create room validation failed. " +
+                    "Room name: {RoomName}, Room capacity: {RoomCapacity}, Error: {Error}",
+                    cmd.Name,
+                    cmd.ReqCapacity,
+                    firstError.ErrorMessage);
+
+                return Result<CreateRoomResponse>.BadRequest(
+                    "VALIDATION_ERROR",
+                    validation.Errors.First().ErrorMessage);
+            }
+
+            if (_user.Role is UserRole.Employee)
+            {
+                var error = RoomError.AccessDenied;
+                return Result<CreateRoomResponse>.Forbidden(error.Code, error.Message);
+            }
+
             var preparedCtx = Prepare(cmd);
 
             _logger.LogInformation(

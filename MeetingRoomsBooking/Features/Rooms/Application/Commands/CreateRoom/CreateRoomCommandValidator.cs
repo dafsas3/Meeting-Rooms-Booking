@@ -20,6 +20,9 @@ namespace MeetingRoomsBooking.Features.Rooms.Application.Commands.CreateRoom
                 .NotEmpty().WithMessage("The location cannot be empty.")
                 .MinimumLength(4).WithMessage("The length of this location must be greater or equal to: 4.")
                 .MaximumLength(30).WithMessage("The length of this location must be less or equal to: 30.");
+
+            RuleFor(cmd => cmd.IsActive)
+                .NotNull().WithMessage("IsActive is required.");
         }
     }
 }
