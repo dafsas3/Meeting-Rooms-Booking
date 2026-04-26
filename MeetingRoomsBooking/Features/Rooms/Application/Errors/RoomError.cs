@@ -7,5 +7,8 @@ namespace MeetingRoomsBooking.Features.Rooms.Application.Errors
         public static ApiError NameAlreadyExistsInThisLocation(string room, string location)
             => new(Code: "ROOM_NAME_IN_THE_LOCATION_ALREADY_EXISTS",
                 Message: $"The name already exists in this location: {room}, location: {location}");
+
+        public static ApiError AccessDenied =>
+            new("FORBIDDEN_ACCESS", "This operation can only be performed by an admin.");
     }
 }
