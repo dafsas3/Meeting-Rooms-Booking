@@ -1,4 +1,6 @@
-﻿using MeetingRoomsBooking.Features.Rooms.Application.Abstractions.Queries;
+﻿using MeetingRoomsBooking.BuildingBlocks.Domain.Room.RoomId;
+using MeetingRoomsBooking.Features.Abstractions.Shared.Queries;
+using MeetingRoomsBooking.Features.Rooms.Application.ReadModels;
 using MeetingRoomsBooking.Features.Rooms.Domain.ValueObjects.RoomLocation;
 using MeetingRoomsBooking.Features.Rooms.Domain.ValueObjects.RoomName;
 using MeetingRoomsBooking.Infrastructure.Persistence.Data;
@@ -20,5 +22,21 @@ namespace MeetingRoomsBooking.Infrastructure.Persistence.Features.Rooms.Queries
             =>
             await _db.Rooms
             .AnyAsync(r => r.Name == name && r.Location == location, ct);
+
+        public async Task<RoomReadModel?> GetById(RoomId roomId, CancellationToken ct)
+        {
+            return await _db.Rooms
+               .AsNoTracking()
+               .Where(r => r.Id == roomId)
+               .Select(r => new RoomReadModel
+               {
+                   Id = r.Id.Value,
+                   Name = r.Name.Value,
+                   Capacity = r.Capacity.Value,
+                   Location = r.Location.Value,
+                   IsActive = r.IsActive
+               })
+               .FirstOrDefaultAsync(ct);
+        }
     }
 }
