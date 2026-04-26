@@ -3,7 +3,7 @@ using MeetingRoomsBooking.Api.Middleware;
 using MeetingRoomsBooking.Api.Swagger;
 using MeetingRoomsBooking.Features.Abstractions.Security;
 using MeetingRoomsBooking.Features.Rooms.Application.Commands.CreateRoom;
-using MeetingRoomsBooking.Infrastructure.Data;
+using MeetingRoomsBooking.Infrastructure.Persistence.Data;
 using MeetingRoomsBooking.Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 
