@@ -1,7 +1,9 @@
-﻿using MeetingRoomsBooking.Features.Rooms.Domain.ValueObjects.RoomLocation;
+﻿using MeetingRoomsBooking.BuildingBlocks.Domain.Room.RoomId;
+using MeetingRoomsBooking.Features.Rooms.Application.ReadModels;
+using MeetingRoomsBooking.Features.Rooms.Domain.ValueObjects.RoomLocation;
 using MeetingRoomsBooking.Features.Rooms.Domain.ValueObjects.RoomName;
 
-namespace MeetingRoomsBooking.Features.Rooms.Application.Abstractions.Queries
+namespace MeetingRoomsBooking.Features.Abstractions.Shared.Queries
 {
     public interface IRoomQueries
     {
@@ -25,5 +27,7 @@ namespace MeetingRoomsBooking.Features.Rooms.Application.Abstractions.Queries
             RoomName name,
             RoomLocation location,
             CancellationToken ct);
+
+        Task<RoomReadModel?> GetById(RoomId roomId, CancellationToken ct);
     }
 }
