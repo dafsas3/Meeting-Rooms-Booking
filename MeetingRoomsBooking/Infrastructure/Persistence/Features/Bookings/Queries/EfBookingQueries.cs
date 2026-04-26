@@ -1,5 +1,7 @@
 ﻿using MeetingRoomsBooking.BuildingBlocks.Domain.Room.RoomId;
+using MeetingRoomsBooking.BuildingBlocks.Domain.ValueObjects.IdempotencyKey;
 using MeetingRoomsBooking.Features.Bookings.Application.Abstractions.Queries;
+using MeetingRoomsBooking.Features.Bookings.Application.ReadModels;
 using MeetingRoomsBooking.Features.Bookings.Domain.Enums;
 using MeetingRoomsBooking.Features.Bookings.Domain.ValueObjects.TimeSlot;
 using MeetingRoomsBooking.Features.Rooms.Application.ReadModels;
@@ -26,24 +28,31 @@ namespace MeetingRoomsBooking.Infrastructure.Persistence.Features.Bookings.Queri
         }
 
 
-        public async Task<RoomReadModel?> GetById(
-            RoomId roomId,
-            RoomLocation location,
-            CancellationToken ct)
-        {
-             return await _db.Rooms
-                .AsNoTracking()
-                .Where(r => r.Id == roomId)
-                .Select(r => new RoomReadModel
-                {
-                    Id = r.Id.Value,
-                    Name = r.Name.Value,
-                    Capacity = r.Capacity.Value,
-                    Location = r.Location.Value,
-                    IsActive = r.IsActive
-                })
-                .FirstOrDefaultAsync(ct);
-        }
 
+
+
+        public async Task<BookingReadModel?> GetByIdempotencyKey(IdempotencyKey key, CancellationToken ct)
+        {
+            var entity = await _db.BookingRequests
+                .Include("_participants")
+                .FirstOrDefaultAsync(b => b.IdempotencyKey == key, ct);
+
+            if (entity is null) return null;
+
+            return new BookingReadModel
+            {
+                Id = entity.Id.Value,
+                RoomId = entity.RoomId.Value,
+                EmployeeId = entity.EmployeeId.Value,
+                IdempotencyKey = entity.IdempotencyKey.Value,
+                StartedAtUtc = entity.TimeSlot.StartAtUtc,
+                EndAtUtc = entity.TimeSlot.EndAtUtc,
+                Purpose = entity.MeetingPurpose.Value,
+                Status = entity.Status,
+                Emails = entity.ParticipantEmails
+                    .Select(e => e.Value)
+                    .ToList()
+            };
+        }
     }
 }
