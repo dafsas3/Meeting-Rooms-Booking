@@ -20,5 +20,7 @@ namespace MeetingRoomsBooking.Features.Abstractions.Common.Result
             => new() { Status = ResultStatus.NotFound, Error = new ApiError(code, message), };
         public static Result<T> Unauthorized(string code, string message) =>
             new() { Status = ResultStatus.Unauthorized, Error = new ApiError(code, message) };
+        public static Result<T> Forbidden(string code, string message) =>
+            new() { Status = ResultStatus.Forbidden, Error = new ApiError(code, message) };
     }
 }

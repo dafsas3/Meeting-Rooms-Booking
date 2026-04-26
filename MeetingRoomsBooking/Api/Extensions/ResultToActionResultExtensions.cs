@@ -20,7 +20,7 @@ namespace MeetingRoomsBooking.Api.Extensions
 
                 ResultStatus.Created => result.Data is null
                 ? controller.ToProblemDetails(Internal(), StatusCodes.Status500InternalServerError)
-                : controller.Created("", result.Data),
+                : controller.StatusCode(StatusCodes.Status201Created, result.Data),
 
                 ResultStatus.BadRequest => controller.ToProblemDetails(
                     result.Error ?? Internal(),
@@ -34,6 +34,9 @@ namespace MeetingRoomsBooking.Api.Extensions
 
                 ResultStatus.Unauthorized => controller.ToProblemDetails(result.Error ?? Internal(),
                     StatusCodes.Status401Unauthorized),
+
+                ResultStatus.Forbidden => controller.ToProblemDetails(result.Error ?? Internal(),
+                    StatusCodes.Status403Forbidden),
 
                 _ => controller.ToProblemDetails(Internal(), StatusCodes.Status500InternalServerError)
             };
