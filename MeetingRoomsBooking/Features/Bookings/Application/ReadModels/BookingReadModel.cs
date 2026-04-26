@@ -1,8 +1,8 @@
 ﻿using MeetingRoomsBooking.Features.Bookings.Domain.Enums;
 
-namespace MeetingRoomsBooking.Features.Bookings.Application.Commands
+namespace MeetingRoomsBooking.Features.Bookings.Application.ReadModels
 {
-    public sealed record CreateBookingRequestResponse
+    public sealed class BookingReadModel
     {
         public required int Id { get; set; }
         public required int RoomId { get; set; }

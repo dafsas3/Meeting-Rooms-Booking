@@ -1,11 +1,9 @@
 ﻿namespace MeetingRoomsBooking.Features.Bookings.Application.Commands
 {
     public sealed record CreateBookingRequestCommand(
-        string RoomName,
-        Guid EmployeeId,
+        int RoomId,
         DateTime StartedAtUtc,
         DateTime EndAtUtc,
         string Purpose,
-        string Role,
         List<string> Emails);
 }
