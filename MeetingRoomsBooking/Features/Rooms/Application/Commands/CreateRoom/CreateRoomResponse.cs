@@ -2,10 +2,10 @@
 {
     public sealed record CreateRoomResponse
     {
-        public required int Id;
-        public required string Name;
-        public required int ReqCapacity;
-        public required string Location;
-        public required bool IsActive;
+        public required int Id { get; init; }
+        public required string Name { get; init; }
+        public required int ReqCapacity { get; init; }
+        public required string Location { get; init; }
+        public required bool IsActive { get; init; }
     }
 }
