@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace MeetingRoomsBooking.Features.Bookings.Application.Commands
+namespace MeetingRoomsBooking.Features.Bookings.Application.Commands.CreateBookingRequest
 {
     public class CreateBookingRequestCommandValidator : AbstractValidator<CreateBookingRequestCommand>
     {

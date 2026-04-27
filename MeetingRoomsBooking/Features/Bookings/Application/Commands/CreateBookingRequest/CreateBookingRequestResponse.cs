@@ -1,6 +1,6 @@
 ﻿using MeetingRoomsBooking.Features.Bookings.Domain.Enums;
 
-namespace MeetingRoomsBooking.Features.Bookings.Application.Commands
+namespace MeetingRoomsBooking.Features.Bookings.Application.Commands.CreateBookingRequest
 {
     public sealed record CreateBookingRequestResponse
     {

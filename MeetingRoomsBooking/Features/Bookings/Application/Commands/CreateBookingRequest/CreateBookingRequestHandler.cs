@@ -20,7 +20,7 @@ using MeetingRoomsBooking.Infrastructure.Persistence.Data;
 using MeetingRoomsBooking.Infrastructure.Persistence.DbExtensions;
 using Microsoft.EntityFrameworkCore;
 
-namespace MeetingRoomsBooking.Features.Bookings.Application.Commands
+namespace MeetingRoomsBooking.Features.Bookings.Application.Commands.CreateBookingRequest
 {
     public class CreateBookingRequestHandler
     {
@@ -59,15 +59,14 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.Commands
             CancellationToken ct)
         {
             var validation = await _validator.ValidateAsync(cmd, ct);
+
             if (!validation.IsValid)
             {
-                var firstError = validation.Errors.First();
-
                 _logger.LogWarning("Create booking validation failed. " +
                     "UserId: {UserId}, RoomId: {RoomId}, Error: {Error}",
                     _user.EmployeeId,
                     cmd.RoomId,
-                    firstError.ErrorMessage);
+                    validation.Errors.First().ErrorMessage);
 
                 return Result<CreateBookingRequestResponse>.BadRequest(
                     "VALIDATION_ERROR",
@@ -102,7 +101,7 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.Commands
 
                 var idempotencyKey = IdempotencyKey.Create(key);
 
-                var readEntity = await _bookingQueries.GetByIdempotencyKey(idempotencyKey, ct);
+                var readEntity = await _bookingQueries.GetByIdempotencyKeyAsync(idempotencyKey, ct);
 
                 if (readEntity is not null)
                 {
@@ -113,7 +112,7 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.Commands
                     return Result<CreateBookingRequestResponse>.Ok(ToResponse(readEntity));
                 }
 
-                var existsRoom = await _roomQueries.GetById(preparedCtx.RoomId, ct);
+                var existsRoom = await _roomQueries.GetByIdAsync(preparedCtx.RoomId, ct);
 
                 if (existsRoom is null)
                 {
@@ -135,7 +134,7 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.Commands
                         BookingError.RoomNotActive.Code, BookingError.RoomNotActive.Message);
                 }
 
-                if (!await _bookingQueries.IsCanBooking(preparedCtx.RoomId, preparedCtx.TimeSlot, ct))
+                if (!await _bookingQueries.IsCanBookingAsync(preparedCtx.RoomId, preparedCtx.TimeSlot, ct))
                 {
                     _logger.LogInformation(
                         "Time slot conflict. RoomId: {RoomId}, Start: {Start}, End: {End}",
@@ -168,7 +167,7 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.Commands
                         preparedCtx.RoomId.Value);
 
                     return Result<CreateBookingRequestResponse>.Created(ToResponse(
-                        entity.ReadModelToCreateRequestResponse()));
+                        entity.EntityToReadModelResponse()));
                 }
 
                 catch (DbUpdateException ex)

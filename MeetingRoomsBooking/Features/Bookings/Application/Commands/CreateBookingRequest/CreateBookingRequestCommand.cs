@@ -1,4 +1,4 @@
-﻿namespace MeetingRoomsBooking.Features.Bookings.Application.Commands
+﻿namespace MeetingRoomsBooking.Features.Bookings.Application.Commands.CreateBookingRequest
 {
     public sealed record CreateBookingRequestCommand(
         int RoomId,
