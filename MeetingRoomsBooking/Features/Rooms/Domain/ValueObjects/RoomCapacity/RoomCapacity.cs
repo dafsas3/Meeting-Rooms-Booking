@@ -17,6 +17,17 @@
 
             return new RoomCapacity(value);
         }
-        
+
+        public static bool operator >=(RoomCapacity left, RoomCapacity right)
+        => left.Value >= right.Value;
+
+        public static bool operator <=(RoomCapacity left, RoomCapacity right)
+            => left.Value <= right.Value;
+
+        public static bool operator >(RoomCapacity left, RoomCapacity right)
+            => left.Value > right.Value;
+
+        public static bool operator <(RoomCapacity left, RoomCapacity right)
+            => left.Value < right.Value;
     }
 }

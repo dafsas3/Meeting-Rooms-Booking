@@ -25,7 +25,6 @@
   <ItemGroup>
     <Folder Include="Features\Bookings\Application\Queries\" />
     <Folder Include="Features\Bookings\Application\Services\" />
-    <Folder Include="Features\Rooms\Application\Queries\" />
     <Folder Include="Features\Rooms\Application\Services\" />
     <Folder Include="Features\Rooms\Domain\Enums\" />
     <Folder Include="Features\Rooms\Domain\Ids\" />

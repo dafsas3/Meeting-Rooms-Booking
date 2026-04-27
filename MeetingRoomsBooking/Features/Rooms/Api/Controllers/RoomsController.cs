@@ -1,6 +1,6 @@
 ﻿using MeetingRoomsBooking.Api.Extensions;
 using MeetingRoomsBooking.Features.Rooms.Application.Commands.CreateRoom;
-using Microsoft.AspNetCore.Http;
+using MeetingRoomsBooking.Features.Rooms.Application.Queries.GetRooms;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MeetingRoomsBooking.Features.Rooms.Api.Controllers
@@ -10,11 +10,14 @@ namespace MeetingRoomsBooking.Features.Rooms.Api.Controllers
     public class RoomsController : ControllerBase
     {
         private readonly CreateRoomHandler _createRoom;
+        private readonly GetRoomsHandler _getRooms;
 
         public RoomsController(
-            CreateRoomHandler create)
+            CreateRoomHandler create,
+            GetRoomsHandler get)
         {
             _createRoom = create;
+            _getRooms = get;
         }
 
 
@@ -23,6 +26,14 @@ namespace MeetingRoomsBooking.Features.Rooms.Api.Controllers
             [FromBody] CreateRoomCommand cmd, CancellationToken ct)
         {
             return this.ToActionResult(await _createRoom.Handle(cmd, ct));
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Get(
+            [FromQuery] GetRoomsQuery query,  CancellationToken ct)
+        {
+            return this.ToActionResult(await _getRooms.Handle(query, ct));
         }
     }
 }

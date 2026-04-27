@@ -9,6 +9,7 @@ using MeetingRoomsBooking.Features.Bookings.Application.Abstractions.Repositorie
 using MeetingRoomsBooking.Features.Bookings.Application.Commands;
 using MeetingRoomsBooking.Features.Rooms.Application.Abstractions.Repositories;
 using MeetingRoomsBooking.Features.Rooms.Application.Commands.CreateRoom;
+using MeetingRoomsBooking.Features.Rooms.Application.Queries.GetRooms;
 using MeetingRoomsBooking.Infrastructure.Persistence.Data;
 using MeetingRoomsBooking.Infrastructure.Persistence.Features.Bookings.Queries;
 using MeetingRoomsBooking.Infrastructure.Persistence.Features.Bookings.Repositories;
@@ -39,6 +40,8 @@ builder.Services.AddScoped<IBookingQueries, EfBookingQueries>();
 builder.Services.AddScoped<IBookingRepository, EfBookingRepository>();
 
 builder.Services.AddScoped<CreateRoomHandler>();
+builder.Services.AddScoped<GetRoomsHandler>();
+
 builder.Services.AddScoped<CreateBookingRequestHandler>();
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
@@ -48,6 +51,7 @@ options.UseNpgsql(connectionString));
 
 builder.Services.AddValidatorsFromAssemblyContaining<CreateRoomCommandValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateBookingRequestCommandValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<GetRoomsQueryValidator>();
 
 var app = builder.Build();
 
