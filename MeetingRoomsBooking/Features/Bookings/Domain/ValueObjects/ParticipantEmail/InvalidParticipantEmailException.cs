@@ -1,12 +1,11 @@
 ﻿using MeetingRoomsBooking.Features.Abstractions.Domain;
-using MeetingRoomsBooking.Features.Bookings.Domain.ValueObjects.MeetingPurpose;
 
 namespace MeetingRoomsBooking.Features.Bookings.Domain.ValueObjects.ParticipantEmail
 {
     public sealed class InvalidParticipantEmailException : DomainException
     {
         private InvalidParticipantEmailException(string value, string reason) : base(
-            code: "INVALID_PARTICIPANT_EMAIL_EXCEPTION",
+            code: "INVALID_PARTICIPANT_EMAIL",
             message: $"Incorrect participant email: \"{value}\". Reason: {reason}.",
             meta: new Dictionary<string, object?>
             {

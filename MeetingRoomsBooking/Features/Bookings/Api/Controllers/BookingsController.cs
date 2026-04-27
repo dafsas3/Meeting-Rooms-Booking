@@ -1,7 +1,6 @@
-﻿using FluentValidation;
-using MeetingRoomsBooking.Api.Extensions;
-using MeetingRoomsBooking.Features.Abstractions.Common.Result;
-using MeetingRoomsBooking.Features.Bookings.Application.Commands;
+﻿using MeetingRoomsBooking.Api.Extensions;
+using MeetingRoomsBooking.Features.Bookings.Application.Commands.CreateBookingRequest;
+using MeetingRoomsBooking.Features.Bookings.Application.Commands.Submit;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MeetingRoomsBooking.Features.Bookings.Api.Controllers
@@ -10,12 +9,15 @@ namespace MeetingRoomsBooking.Features.Bookings.Api.Controllers
     [ApiController]
     public class BookingsController : ControllerBase
     {
-        private readonly CreateBookingRequestHandler _bookingRequest;
+        private readonly CreateBookingRequestHandler _createBookingHandler;
+        private readonly SubmitBookingHandler _submitHandler;
 
         public BookingsController(
-            CreateBookingRequestHandler bookingRequest)
+            CreateBookingRequestHandler bookingRequest,
+            SubmitBookingHandler submit)
         {
-            _bookingRequest = bookingRequest;
+            _createBookingHandler = bookingRequest;
+            _submitHandler = submit;
         }
 
 
@@ -24,8 +26,15 @@ namespace MeetingRoomsBooking.Features.Bookings.Api.Controllers
             [FromBody] CreateBookingRequestCommand cmd,
             [FromHeader(Name = "Idempotency-Key")] Guid idempotencyKey,
             CancellationToken ct)
-        {          
-            return this.ToActionResult(await _bookingRequest.Handle(cmd, idempotencyKey, ct));
+        {
+            return this.ToActionResult(await _createBookingHandler.Handle(cmd, idempotencyKey, ct));
         }
+
+        [HttpPost("{id}/submit")]
+        public async Task<IActionResult> Submit(int id, CancellationToken ct)
+        {
+            return this.ToActionResult(await _submitHandler.Handle(new SubmitBookingCommand(id), ct));
+        }
+
     }
 }

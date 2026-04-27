@@ -5,7 +5,7 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.Extensions
 {
     public static class BookingMapperExtensions
     {
-        public static BookingReadModel ReadModelToCreateRequestResponse(
+        public static BookingReadModel EntityToReadModelResponse(
             this BookingRequest entity)
             => new BookingReadModel
             {

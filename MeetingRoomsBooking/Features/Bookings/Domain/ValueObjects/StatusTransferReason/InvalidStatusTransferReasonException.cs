@@ -1,5 +1,4 @@
 ﻿using MeetingRoomsBooking.Features.Abstractions.Domain;
-using MeetingRoomsBooking.Features.Bookings.Domain.ValueObjects.MeetingPurpose;
 
 namespace MeetingRoomsBooking.Features.Bookings.Domain.ValueObjects.StatusTransferReason
 {

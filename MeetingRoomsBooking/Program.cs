@@ -6,7 +6,8 @@ using MeetingRoomsBooking.Features.Abstractions.Security;
 using MeetingRoomsBooking.Features.Abstractions.Shared.Queries;
 using MeetingRoomsBooking.Features.Bookings.Application.Abstractions.Queries;
 using MeetingRoomsBooking.Features.Bookings.Application.Abstractions.Repositories;
-using MeetingRoomsBooking.Features.Bookings.Application.Commands;
+using MeetingRoomsBooking.Features.Bookings.Application.Commands.CreateBookingRequest;
+using MeetingRoomsBooking.Features.Bookings.Application.Commands.Submit;
 using MeetingRoomsBooking.Features.Rooms.Application.Abstractions.Repositories;
 using MeetingRoomsBooking.Features.Rooms.Application.Commands.CreateRoom;
 using MeetingRoomsBooking.Features.Rooms.Application.Queries.GetRooms;
@@ -43,6 +44,7 @@ builder.Services.AddScoped<CreateRoomHandler>();
 builder.Services.AddScoped<GetRoomsHandler>();
 
 builder.Services.AddScoped<CreateBookingRequestHandler>();
+builder.Services.AddScoped<SubmitBookingHandler>();
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
 

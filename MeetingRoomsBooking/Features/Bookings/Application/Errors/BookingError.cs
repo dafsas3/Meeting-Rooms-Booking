@@ -5,7 +5,7 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.Errors
     public static class BookingError
     {
         public static ApiError RoomNotFound(int id) =>
-            new("ROOM_BY_ID_NOT_FOUND", "The room id not found.", id);
+            new("ROOM_NOT_FOUND", "The room ID not found.", id);
 
         public static ApiError TimeSlotBusy(DateTime start, DateTime end) =>
             new("TIME_SLOT_IS_BUSY", "This time slot is busy.", new[] {start, end});
@@ -19,5 +19,11 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.Errors
 
         public static ApiError RoomNotActive =>
             new("ROOM_NOT_ACTIVE", "This room is currently unavailable.");
+
+        public static ApiError BookingNotFound(int id) =>
+            new("BOOKING_NOT_FOUND", "The booking ID not found.", id);
+
+        public static ApiError BookingStatusAlreadyChange =>
+            new("BOOKING_STATUS_ALREADY_CHANGE", "The status of this booking has already been changed.");
     }
 }
