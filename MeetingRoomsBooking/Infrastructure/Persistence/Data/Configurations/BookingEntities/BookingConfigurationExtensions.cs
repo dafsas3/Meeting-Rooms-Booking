@@ -48,6 +48,10 @@ namespace MeetingRoomsBooking.Infrastructure.Persistence.Data.Configurations.Boo
             entity.Property(b => b.Status)
                 .IsRequired();
 
+            entity.Property<uint>("xmin")
+                .IsRowVersion()
+                .HasColumnName("xmin");
+            
             entity.Ignore(b => b.ParticipantEmails);
             entity.Ignore(b => b.History);
 

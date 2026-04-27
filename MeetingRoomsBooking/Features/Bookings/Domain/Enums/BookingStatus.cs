@@ -2,11 +2,10 @@
 {
     public enum BookingStatus
     {
-        Created = 0,
-        Draft = 1,
-        Submitted = 2,
-        Confirmed = 3,
-        Declined = 4,
-        Cancelled = 5
+        Draft = 0,
+        Submitted = 1,
+        Confirmed = 2,
+        Declined = 3,
+        Cancelled = 4
     }
 }
