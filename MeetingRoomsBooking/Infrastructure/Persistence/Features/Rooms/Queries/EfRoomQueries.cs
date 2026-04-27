@@ -23,7 +23,7 @@ namespace MeetingRoomsBooking.Infrastructure.Persistence.Features.Rooms.Queries
             await _db.Rooms
             .AnyAsync(r => r.Name == name && r.Location == location, ct);
 
-        public async Task<RoomReadModel?> GetById(RoomId roomId, CancellationToken ct)
+        public async Task<RoomReadModel?> GetByIdAsync(RoomId roomId, CancellationToken ct)
         {
             return await _db.Rooms
                .AsNoTracking()

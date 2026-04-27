@@ -1,6 +1,8 @@
 ﻿using MeetingRoomsBooking.BuildingBlocks.Domain.Room.RoomId;
 using MeetingRoomsBooking.BuildingBlocks.Domain.ValueObjects.IdempotencyKey;
 using MeetingRoomsBooking.Features.Bookings.Application.ReadModels;
+using MeetingRoomsBooking.Features.Bookings.Domain.Enums;
+using MeetingRoomsBooking.Features.Bookings.Domain.Ids.BookingRequestId;
 using MeetingRoomsBooking.Features.Bookings.Domain.ValueObjects.TimeSlot;
 
 namespace MeetingRoomsBooking.Features.Bookings.Application.Abstractions.Queries
@@ -22,7 +24,7 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.Abstractions.Queries
         /// <remarks>
         /// Used when attempting to request a new reservation for a specified time interval.
         /// </remarks>
-        Task<bool> IsCanBooking(RoomId roomId, TimeSlot reqTime, CancellationToken ct);
+        Task<bool> IsCanBookingAsync(RoomId roomId, TimeSlot reqTime, CancellationToken ct);
 
 
         /// <summary>
@@ -39,6 +41,8 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.Abstractions.Queries
         /// <remarks>
         /// Used to prevent an error due to a double request.
         /// </remarks>
-        Task<BookingReadModel?> GetByIdempotencyKey(IdempotencyKey key, CancellationToken ct);
+        Task<BookingReadModel?> GetByIdempotencyKeyAsync(IdempotencyKey key, CancellationToken ct);
+
+        Task<BookingReadModel?> GetByIdAsync(BookingRequestId id, CancellationToken ct);
     }
 }

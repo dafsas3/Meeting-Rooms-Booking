@@ -1,6 +1,8 @@
 ﻿using MeetingRoomsBooking.Features.Bookings.Application.Abstractions.Repositories;
 using MeetingRoomsBooking.Features.Bookings.Domain.Entities;
+using MeetingRoomsBooking.Features.Bookings.Domain.Ids.BookingRequestId;
 using MeetingRoomsBooking.Infrastructure.Persistence.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace MeetingRoomsBooking.Infrastructure.Persistence.Features.Bookings.Repositories
 {
@@ -12,5 +14,12 @@ namespace MeetingRoomsBooking.Infrastructure.Persistence.Features.Bookings.Repos
 
 
         public void Add(BookingRequest entity) => _db.Add(entity);
+
+
+        public async Task<BookingRequest?> GetEntityByIdAsync(
+            BookingRequestId id,
+            CancellationToken ct)
+            => await _db.BookingRequests
+            .FirstOrDefaultAsync(b => b.Id  == id, ct);
     }
 }

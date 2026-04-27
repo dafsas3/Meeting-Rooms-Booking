@@ -28,6 +28,6 @@ namespace MeetingRoomsBooking.Features.Abstractions.Shared.Queries
             RoomLocation location,
             CancellationToken ct);
 
-        Task<RoomReadModel?> GetById(RoomId roomId, CancellationToken ct);
+        Task<RoomReadModel?> GetByIdAsync(RoomId roomId, CancellationToken ct);
     }
 }

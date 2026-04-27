@@ -3,9 +3,8 @@ using MeetingRoomsBooking.BuildingBlocks.Domain.ValueObjects.IdempotencyKey;
 using MeetingRoomsBooking.Features.Bookings.Application.Abstractions.Queries;
 using MeetingRoomsBooking.Features.Bookings.Application.ReadModels;
 using MeetingRoomsBooking.Features.Bookings.Domain.Enums;
+using MeetingRoomsBooking.Features.Bookings.Domain.Ids.BookingRequestId;
 using MeetingRoomsBooking.Features.Bookings.Domain.ValueObjects.TimeSlot;
-using MeetingRoomsBooking.Features.Rooms.Application.ReadModels;
-using MeetingRoomsBooking.Features.Rooms.Domain.ValueObjects.RoomLocation;
 using MeetingRoomsBooking.Infrastructure.Persistence.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +16,8 @@ namespace MeetingRoomsBooking.Infrastructure.Persistence.Features.Bookings.Queri
 
         public EfBookingQueries(BookingDbContext db) => _db = db;
 
-        public async Task<bool> IsCanBooking(RoomId roomId, TimeSlot reqTime, CancellationToken ct)
+
+        public async Task<bool> IsCanBookingAsync(RoomId roomId, TimeSlot reqTime, CancellationToken ct)
         {
             return !await _db.BookingRequests
                 .AnyAsync(b => b.RoomId == roomId &&
@@ -28,10 +28,7 @@ namespace MeetingRoomsBooking.Infrastructure.Persistence.Features.Bookings.Queri
         }
 
 
-
-
-
-        public async Task<BookingReadModel?> GetByIdempotencyKey(IdempotencyKey key, CancellationToken ct)
+        public async Task<BookingReadModel?> GetByIdempotencyKeyAsync(IdempotencyKey key, CancellationToken ct)
         {
             var entity = await _db.BookingRequests
                 .Include("_participants")
@@ -54,5 +51,30 @@ namespace MeetingRoomsBooking.Infrastructure.Persistence.Features.Bookings.Queri
                     .ToList()
             };
         }
+
+
+        public async Task<BookingReadModel?> GetByIdAsync(
+            BookingRequestId id,
+            CancellationToken ct)
+            => 
+            await _db.BookingRequests
+            .AsNoTracking()
+            .Where(b => b.Id == id)
+            .Select(b => new BookingReadModel
+            {
+                Id = b.Id.Value,
+                RoomId = b.RoomId.Value,
+                EmployeeId = b.EmployeeId.Value,
+                IdempotencyKey = b.IdempotencyKey.Value,
+                StartedAtUtc = b.TimeSlot.StartAtUtc,
+                EndAtUtc = b.TimeSlot.EndAtUtc,
+                Purpose = b.MeetingPurpose.Value,
+                Status = b.Status,
+                Emails = b.ParticipantEmails
+                .Select(e => e.Value)
+                .ToList()
+            })
+            .FirstOrDefaultAsync(ct);
+
     }
 }
