@@ -17,7 +17,7 @@ namespace MeetingRoomsBooking.Infrastructure.Security
                     .FirstOrDefault();
 
                 if (!Guid.TryParse(value, out var id))
-                    throw new UnauthorizedAccessException("Missing or invalid X-Employee header.");
+                    throw new UnauthorizedAccessException("Missing or invalid X-EmployeeId header.");
 
                 return id;
             }
