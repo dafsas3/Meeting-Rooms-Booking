@@ -13,11 +13,11 @@ namespace MeetingRoomsBooking.Infrastructure.Security
         {
             get
             {
-                var value = _httpCtxAccessor.HttpContext?.Request.Headers["X-EmployeeId"]
+                var value = _httpCtxAccessor.HttpContext?.Request.Headers["X-EmployeeID"]
                     .FirstOrDefault();
 
                 if (!Guid.TryParse(value, out var id))
-                    throw new UnauthorizedAccessException("Missing or invalid X-EmployeeId header.");
+                    throw new UnauthorizedAccessException("Missing or invalid X-EmployeeID header.");
 
                 return id;
             }
