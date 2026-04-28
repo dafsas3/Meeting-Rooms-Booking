@@ -4,7 +4,7 @@ namespace MeetingRoomsBooking.Features.Bookings.Domain.Workflow
 {
     public static class BookingWorkflow
     {
-        private static readonly Dictionary<BookingStatus, HashSet<BookingStatus>> 
+        private static readonly Dictionary<BookingStatus, HashSet<BookingStatus>>
             AllowedTransition = new()
             {
                 [BookingStatus.Draft] = [BookingStatus.Submitted],
@@ -16,7 +16,13 @@ namespace MeetingRoomsBooking.Features.Bookings.Domain.Workflow
         private static readonly Dictionary<BookingActorRole, HashSet<BookingStatus>> AllowedRoles
             = new()
             {
-                [BookingActorRole.Employee] = [BookingStatus.Submitted, BookingStatus.Cancelled],
+                [BookingActorRole.Employee] =
+                [
+                    BookingStatus.Draft,
+                    BookingStatus.Submitted,
+                    BookingStatus.Cancelled
+                ],
+
                 [BookingActorRole.Admin] = [BookingStatus.Confirmed, BookingStatus.Declined]
             };
 

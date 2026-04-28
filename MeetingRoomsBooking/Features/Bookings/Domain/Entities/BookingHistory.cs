@@ -1,7 +1,7 @@
 ﻿using MeetingRoomsBooking.Features.Bookings.Domain.Enums;
 using MeetingRoomsBooking.Features.Bookings.Domain.Ids.BookingHistoryId;
 using MeetingRoomsBooking.Features.Bookings.Domain.Ids.BookingRequestId;
-using MeetingRoomsBooking.Features.Bookings.Domain.Ids.UserId;
+using MeetingRoomsBooking.Features.Bookings.Domain.Ids.EmployeeId;
 using MeetingRoomsBooking.Features.Bookings.Domain.ValueObjects.StatusTransferReason;
 
 namespace MeetingRoomsBooking.Features.Bookings.Domain.Entities

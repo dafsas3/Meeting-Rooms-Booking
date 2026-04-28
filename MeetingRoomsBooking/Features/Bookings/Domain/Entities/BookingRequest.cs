@@ -3,7 +3,7 @@ using MeetingRoomsBooking.BuildingBlocks.Domain.ValueObjects.IdempotencyKey;
 using MeetingRoomsBooking.Features.Bookings.Domain.Enums;
 using MeetingRoomsBooking.Features.Bookings.Domain.Exceptions;
 using MeetingRoomsBooking.Features.Bookings.Domain.Ids.BookingRequestId;
-using MeetingRoomsBooking.Features.Bookings.Domain.Ids.UserId;
+using MeetingRoomsBooking.Features.Bookings.Domain.Ids.EmployeeId;
 using MeetingRoomsBooking.Features.Bookings.Domain.ValueObjects.MeetingPurpose;
 using MeetingRoomsBooking.Features.Bookings.Domain.ValueObjects.ParticipantEmail;
 using MeetingRoomsBooking.Features.Bookings.Domain.ValueObjects.StatusTransferReason;
@@ -58,18 +58,23 @@ namespace MeetingRoomsBooking.Features.Bookings.Domain.Entities
             List<ParticipantEmail> emails,
             IdempotencyKey key)
         {
+            var to = BookingStatus.Draft;
+
+            RoleCanChangeStatus(role, to);
+
             var entity = new BookingRequest(
                 roomId,
                 employeeId,
                 time,
                 purpose,
-                BookingStatus.Draft,
+                to,
                 emails,
                 key);
 
-            entity.WriteHistory(role,
-                BookingStatus.Draft,
-                StatusTransferReason.Create("Reservation created."));
+            entity.WriteHistory(
+                role,
+                to,
+                StatusTransferReason.Create("The reservation has been saved in draft."));
 
             return entity;
         }
@@ -89,9 +94,11 @@ namespace MeetingRoomsBooking.Features.Bookings.Domain.Entities
         }
 
 
-        public void Submit(BookingActorRole role)
+        public void Submit(BookingActorRole role, EmployeeId employeeId)
         {
             var statusTo = BookingStatus.Submitted;
+
+            IsOwner(employeeId);
             RoleCanChangeStatus(role, statusTo);
 
             ChangeStatus(
@@ -122,9 +129,14 @@ namespace MeetingRoomsBooking.Features.Bookings.Domain.Entities
         }
 
 
-        public void Cancel(BookingActorRole role, StatusTransferReason reason)
+        public void Cancel(
+            BookingActorRole role,
+            EmployeeId employeeId,
+            StatusTransferReason reason)
         {
             var statusTo = BookingStatus.Cancelled;
+
+            IsOwner(employeeId);
             RoleCanChangeStatus(role, statusTo);
 
             ChangeStatus(role, statusTo, reason);
@@ -155,6 +167,16 @@ namespace MeetingRoomsBooking.Features.Bookings.Domain.Entities
                     role.ToString(), to.ToString());
             }
         }
+
+
+        private void IsOwner(EmployeeId employeeId)
+        {
+            if (EmployeeId != employeeId)
+                throw InvalidEmployeeIdException.Mismatch(employeeId.Value);
+        }
+
+
+        public int GetParticipantsCount() => _participants.Count;
 
     }
 }
