@@ -1,7 +1,7 @@
 ﻿using MeetingRoomsBooking.BuildingBlocks.Domain.Room.RoomId;
 using MeetingRoomsBooking.BuildingBlocks.Domain.ValueObjects.IdempotencyKey;
 using MeetingRoomsBooking.Features.Bookings.Domain.Ids.BookingRequestId;
-using MeetingRoomsBooking.Features.Bookings.Domain.Ids.UserId;
+using MeetingRoomsBooking.Features.Bookings.Domain.Ids.EmployeeId;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MeetingRoomsBooking.Infrastructure.Persistence.Data.Configurations.Extensions

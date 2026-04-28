@@ -146,7 +146,7 @@ namespace MeetingRoomsBooking.Infrastructure.Persistence.Data.Migrations
             modelBuilder.Entity("MeetingRoomsBooking.Features.Bookings.Domain.Entities.BookingHistory", b =>
                 {
                     b.HasOne("MeetingRoomsBooking.Features.Bookings.Domain.Entities.BookingRequest", null)
-                        .WithMany("_history")
+                        .WithMany("History")
                         .HasForeignKey("BookingRequestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -154,7 +154,7 @@ namespace MeetingRoomsBooking.Infrastructure.Persistence.Data.Migrations
 
             modelBuilder.Entity("MeetingRoomsBooking.Features.Bookings.Domain.Entities.BookingRequest", b =>
                 {
-                    b.OwnsMany("MeetingRoomsBooking.Features.Bookings.Domain.ValueObjects.ParticipantEmail.ParticipantEmail", "_participants", b1 =>
+                    b.OwnsMany("MeetingRoomsBooking.Features.Bookings.Domain.ValueObjects.ParticipantEmail.ParticipantEmail", "ParticipantEmails", b1 =>
                         {
                             b1.Property<int>("BookingRequestId")
                                 .HasColumnType("integer");
@@ -177,7 +177,8 @@ namespace MeetingRoomsBooking.Infrastructure.Persistence.Data.Migrations
                                 .HasColumnType("integer");
 
                             b1.Property<DateTime>("EndAtUtc")
-                                .HasColumnType("timestamp with time zone");
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("EndAtUtc");
 
                             b1.Property<DateTime>("StartAtUtc")
                                 .HasColumnType("timestamp with time zone")
@@ -191,15 +192,15 @@ namespace MeetingRoomsBooking.Infrastructure.Persistence.Data.Migrations
                                 .HasForeignKey("BookingRequestId");
                         });
 
+                    b.Navigation("ParticipantEmails");
+
                     b.Navigation("TimeSlot")
                         .IsRequired();
-
-                    b.Navigation("_participants");
                 });
 
             modelBuilder.Entity("MeetingRoomsBooking.Features.Bookings.Domain.Entities.BookingRequest", b =>
                 {
-                    b.Navigation("_history");
+                    b.Navigation("History");
                 });
 #pragma warning restore 612, 618
         }

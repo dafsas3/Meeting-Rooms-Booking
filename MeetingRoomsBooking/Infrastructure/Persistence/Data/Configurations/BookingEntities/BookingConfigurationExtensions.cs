@@ -35,7 +35,7 @@ namespace MeetingRoomsBooking.Infrastructure.Persistence.Data.Configurations.Boo
                 .IsRequired();
 
                 slot.Property(s => s.EndAtUtc)
-                .HasColumnType("EndAtUtc")
+                .HasColumnName("EndAtUtc")
                 .HasColumnType("timestamp with time zone")
                 .IsRequired();
             });
@@ -51,11 +51,8 @@ namespace MeetingRoomsBooking.Infrastructure.Persistence.Data.Configurations.Boo
             entity.Property<uint>("xmin")
                 .IsRowVersion()
                 .HasColumnName("xmin");
-            
-            entity.Ignore(b => b.ParticipantEmails);
-            entity.Ignore(b => b.History);
 
-            entity.OwnsMany<ParticipantEmail>("_participants", p =>
+            entity.OwnsMany(b => b.ParticipantEmails, p =>
             {
                 p.ToTable("BookingParticipants");
 
@@ -68,10 +65,18 @@ namespace MeetingRoomsBooking.Infrastructure.Persistence.Data.Configurations.Boo
                 p.HasKey("BookingRequestId", nameof(ParticipantEmail.Value));
             });
 
-            entity.HasMany<BookingHistory>("_history")
+            entity.Navigation(b => b.ParticipantEmails)
+                .HasField("_participants")
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+            entity.HasMany(b => b.History)
                 .WithOne()
-                .HasForeignKey("BookingRequestId")
+                .HasForeignKey(h => h.BookingRequestId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            entity.Navigation(b => b.History)
+                .HasField("_history")
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
         }
 
         

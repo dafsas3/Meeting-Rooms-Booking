@@ -1,5 +1,6 @@
 ﻿using MeetingRoomsBooking.BuildingBlocks.Domain.Room.RoomId;
 using MeetingRoomsBooking.BuildingBlocks.Domain.ValueObjects.IdempotencyKey;
+using MeetingRoomsBooking.Features.Bookings.Application.Queries.GetBookings;
 using MeetingRoomsBooking.Features.Bookings.Application.ReadModels;
 using MeetingRoomsBooking.Features.Bookings.Domain.Enums;
 using MeetingRoomsBooking.Features.Bookings.Domain.Ids.BookingRequestId;
@@ -44,5 +45,25 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.Abstractions.Queries
         Task<BookingReadModel?> GetByIdempotencyKeyAsync(IdempotencyKey key, CancellationToken ct);
 
         Task<BookingReadModel?> GetByIdAsync(BookingRequestId id, CancellationToken ct);
+
+
+        /// <summary>
+        /// Searches for booking records based on the specified parameters.
+        /// </summary>
+        /// 
+        /// <param name="query">Query with parameters.</param>
+        /// <param name="ct">Cancellation token.</param>
+        /// 
+        /// <returns>
+        /// Filtered list of bookings entries.
+        /// </returns>
+        /// 
+        /// <remarks>
+        /// If no parameters are present, all records will be returned.
+        /// </remarks>
+        Task<List<BookingReadModel>> GetByFiltersAsync(GetBookingsQuery query, CancellationToken ct);
+
+        Task<BookingDetailsReadModel?> GetDetailsByIdAsync(
+            BookingRequestId id, CancellationToken ct);
     }
 }
