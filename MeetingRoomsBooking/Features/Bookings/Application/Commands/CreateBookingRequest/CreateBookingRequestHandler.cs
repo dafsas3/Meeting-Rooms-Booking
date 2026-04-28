@@ -12,7 +12,7 @@ using MeetingRoomsBooking.Features.Bookings.Application.Extensions;
 using MeetingRoomsBooking.Features.Bookings.Application.ReadModels;
 using MeetingRoomsBooking.Features.Bookings.Domain.Entities;
 using MeetingRoomsBooking.Features.Bookings.Domain.Enums;
-using MeetingRoomsBooking.Features.Bookings.Domain.Ids.UserId;
+using MeetingRoomsBooking.Features.Bookings.Domain.Ids.EmployeeId;
 using MeetingRoomsBooking.Features.Bookings.Domain.ValueObjects.MeetingPurpose;
 using MeetingRoomsBooking.Features.Bookings.Domain.ValueObjects.ParticipantEmail;
 using MeetingRoomsBooking.Features.Bookings.Domain.ValueObjects.TimeSlot;
@@ -69,8 +69,7 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.Commands.CreateBooki
                     validation.Errors.First().ErrorMessage);
 
                 return Result<CreateBookingRequestResponse>.BadRequest(
-                    "VALIDATION_ERROR",
-                    validation.Errors.First().ErrorMessage);
+                    "VALIDATION_ERROR", validation.Errors.First().ErrorMessage);
             }
 
             _logger.LogInformation(
@@ -81,17 +80,6 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.Commands.CreateBooki
                 cmd.StartedAtUtc,
                 cmd.EndAtUtc,
                 key);
-
-            if (_user.Role != UserRole.Employee)
-            {
-                _logger.LogWarning(
-                    "Access denied. UserId: {UserId}, Role: {Role}",
-                    _user.EmployeeId,
-                    _user.Role);
-
-                var error = BookingError.AccessDenied(_user.Role.ToString());
-                return Result<CreateBookingRequestResponse>.Forbidden(error.Code, error.Message);
-            }
 
             var preparedCtx = Prepare(cmd);
 
@@ -112,7 +100,7 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.Commands.CreateBooki
                     return Result<CreateBookingRequestResponse>.Ok(ToResponse(readEntity));
                 }
 
-                var existsRoom = await _roomQueries.GetByIdAsync(preparedCtx.RoomId, ct);
+                var existsRoom = await _roomQueries.GetReadByIdAsync(preparedCtx.RoomId, ct);
 
                 if (existsRoom is null)
                 {

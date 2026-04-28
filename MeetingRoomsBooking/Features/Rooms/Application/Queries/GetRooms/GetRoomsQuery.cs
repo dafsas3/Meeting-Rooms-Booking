@@ -4,5 +4,5 @@
         string? Name,
         string? Location,
         int? MinCapacity,
-        bool? IsActive = true);
+        bool? IsActive);
 }

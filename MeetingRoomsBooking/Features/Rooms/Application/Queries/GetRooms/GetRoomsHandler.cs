@@ -1,24 +1,24 @@
 ﻿using FluentValidation;
 using MeetingRoomsBooking.Features.Abstractions.Common.Result;
+using MeetingRoomsBooking.Features.Abstractions.Shared.Queries;
 using MeetingRoomsBooking.Features.Rooms.Application.ReadModels;
-using MeetingRoomsBooking.Features.Rooms.Domain.Entities;
-using MeetingRoomsBooking.Features.Rooms.Domain.ValueObjects.RoomCapacity;
-using MeetingRoomsBooking.Features.Rooms.Domain.ValueObjects.RoomLocation;
-using MeetingRoomsBooking.Features.Rooms.Domain.ValueObjects.RoomName;
-using MeetingRoomsBooking.Infrastructure.Persistence.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace MeetingRoomsBooking.Features.Rooms.Application.Queries.GetRooms
 {
     public sealed class GetRoomsHandler
     {
-        private readonly BookingDbContext _db;
-        private IValidator<GetRoomsQuery> _validator;
+        private readonly IRoomQueries _rooms;
+        private readonly IValidator<GetRoomsQuery> _validator;
+        private readonly ILogger<GetRoomsHandler> _logger;
 
-        public GetRoomsHandler(BookingDbContext db, IValidator<GetRoomsQuery> validator)
+        public GetRoomsHandler(
+            IRoomQueries rooms,
+            IValidator<GetRoomsQuery> validator,
+            ILogger<GetRoomsHandler> logger)
         {
-            _db = db;
+            _rooms = rooms;
             _validator = validator;
+            _logger = logger;
         }
 
 
@@ -28,43 +28,25 @@ namespace MeetingRoomsBooking.Features.Rooms.Application.Queries.GetRooms
 
             if (!validation.IsValid)
             {
+                _logger.LogWarning(
+                    "GetRooms validation failed. Error: {Error}",
+                    validation.Errors.First().ErrorMessage);
+
                 return Result<List<RoomReadModel>>.BadRequest(
                     "VALIDATION_ERROR", validation.Errors.First().ErrorMessage);
             }
 
-            IQueryable<Room> rooms = _db.Rooms.AsNoTracking();
+            _logger.LogInformation(
+                "Fetching rooms list. Filters: Name={Name}, Location={Location}, " +
+                "MinCapacity={MinCapacity}, IsActive={IsActive}",
+                query.Name,
+                query.Location,
+                query.MinCapacity,
+                query.IsActive);
+            
+            var result = await _rooms.GetByFiltersAsync(query, ct);
 
-            if (!string.IsNullOrWhiteSpace(query.Name))
-            {
-                rooms = rooms.Where(r => r.Name == RoomName.Create(query.Name));
-            }
-
-            if (!string.IsNullOrWhiteSpace(query.Location))
-            {
-                rooms = rooms.Where(r => r.Location == RoomLocation.Create(query.Location));
-            }
-
-            if (query.MinCapacity is not null)
-            {
-                var minCapacity = RoomCapacity.Create(query.MinCapacity.Value);
-                rooms = rooms.Where(r => r.Capacity >= minCapacity);
-            }
-
-            if (query.IsActive is not null)
-            {
-                rooms = rooms.Where(r => r.IsActive == query.IsActive);
-            }
-
-            var result = await rooms.
-                Select(r => new RoomReadModel
-                {
-                    Id = r.Id.Value,
-                    Name = r.Name.Value,
-                    Location = r.Location.Value,
-                    Capacity = r.Capacity.Value,
-                    IsActive = r.IsActive
-                })
-                .ToListAsync(ct);
+            _logger.LogInformation("Rooms fetched successfully. Count: {Count}", result.Count);
 
             return Result<List<RoomReadModel>>.Ok(result);
         }

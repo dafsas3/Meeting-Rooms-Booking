@@ -1,6 +1,5 @@
 ﻿using MeetingRoomsBooking.BuildingBlocks.Domain.Room.RoomId;
 using MeetingRoomsBooking.Features.Abstractions.Common.Result;
-using MeetingRoomsBooking.Features.Abstractions.Persistence.UnitOfWork;
 using MeetingRoomsBooking.Features.Abstractions.Security;
 using MeetingRoomsBooking.Features.Abstractions.Shared.Queries;
 using MeetingRoomsBooking.Features.Bookings.Application.Abstractions.Queries;
@@ -8,10 +7,10 @@ using MeetingRoomsBooking.Features.Bookings.Application.Abstractions.Repositorie
 using MeetingRoomsBooking.Features.Bookings.Application.Errors;
 using MeetingRoomsBooking.Features.Bookings.Application.Extensions;
 using MeetingRoomsBooking.Features.Bookings.Application.ReadModels;
-using MeetingRoomsBooking.Features.Bookings.Domain.Enums;
+using MeetingRoomsBooking.Features.Bookings.Application.Services;
 using MeetingRoomsBooking.Features.Bookings.Domain.Ids.BookingRequestId;
+using MeetingRoomsBooking.Features.Bookings.Domain.Ids.EmployeeId;
 using MeetingRoomsBooking.Features.Bookings.Domain.ValueObjects.TimeSlot;
-using Microsoft.EntityFrameworkCore;
 
 namespace MeetingRoomsBooking.Features.Bookings.Application.Commands.Submit
 {
@@ -20,24 +19,24 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.Commands.Submit
         private readonly IBookingQueries _bookingQueries;
         private readonly IBookingRepository _bookingRepository;
         private readonly IRoomQueries _roomQueries;
-        private readonly IUnitOfWork _uow;
         private readonly ILogger<SubmitBookingHandler> _logger;
         private readonly ICurrentUser _user;
+        private readonly IProtectionConccurency _protectionConccurency;
 
         public SubmitBookingHandler(
             IBookingQueries bookingQueries,
             IBookingRepository bookingRepository,
             IRoomQueries roomQueriest,
-            IUnitOfWork uow,
             ILogger<SubmitBookingHandler> logger,
-            ICurrentUser user)
+            ICurrentUser user,
+            IProtectionConccurency protectionConccurency)
         {
             _bookingQueries = bookingQueries;
             _roomQueries = roomQueriest;
             _bookingRepository = bookingRepository;
-            _uow = uow;
             _logger = logger;
             _user = user;
+            _protectionConccurency = protectionConccurency;
         }
 
 
@@ -61,19 +60,11 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.Commands.Submit
             }
 
             var role = _user.Role.ToBookingActorRole();
-
-            if (role != BookingActorRole.Employee)
-            {
-                _logger.LogWarning("The incoming role cannot perform this operation. Role: {Role}.",
-                    role.ToString());
-
-                var error = BookingError.AccessDenied(role.ToString());
-                return Result<SubmitBookingResponse>.Forbidden(error.Code, error.Message);
-            }
+            var employeeId = EmployeeId.Create(_user.EmployeeId);
 
             var roomId = RoomId.Create(existsBooking.RoomId.Value);
 
-            var existsRoom = await _roomQueries.GetByIdAsync(roomId, ct);
+            var existsRoom = await _roomQueries.GetEntityByIdAsync(roomId, ct);
 
             if (existsRoom is null)
             {
@@ -82,6 +73,16 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.Commands.Submit
 
                 var error = BookingError.RoomNotFound(roomId.Value);
                 return Result<SubmitBookingResponse>.NotFound(error.Code, error.Message);
+            }
+
+            if (!existsRoom.CanFit(existsBooking.GetParticipantsCount()))
+            {
+                _logger.LogWarning("The reservation exceeds the maximum " +
+                    "number of participants in the room. Booking participants count: {Count}",
+                    existsBooking.GetParticipantsCount());
+
+                var error = BookingError.ManyParticipants;
+                return Result<SubmitBookingResponse>.BadRequest(error.Code, error.Message);
             }
 
             if (!existsRoom.IsActive)
@@ -108,7 +109,7 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.Commands.Submit
                 return Result<SubmitBookingResponse>.Conflict(error.Code, error.Message);
             }
 
-            existsBooking.Submit(role);
+            existsBooking.Submit(role, employeeId);
 
             _logger.LogInformation("Attempting to change the booking status to submitted. " +
                 "Booking request ID: {BookingId}, RoomID: {RoomId}, Role: {Role}, StartAtUtc: {Start}, " +
@@ -119,24 +120,9 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.Commands.Submit
                 reqTimeSlot.StartAtUtc,
                 reqTimeSlot.EndAtUtc);
 
-            try
+            if (!await _protectionConccurency.TrySaveAsync(ct))
             {
-                await _uow.SaveChangesAsync(ct);
-
-                _logger.LogInformation("Saving the new status is successful. " +
-                    "Booking request ID: {BookingId} Status: {Status}.",
-                    existsBooking.Id.Value,
-                    existsBooking.Status.ToString());
-
-                return Result<SubmitBookingResponse>.Ok(ToResponse(
-                    existsBooking.EntityToReadModelResponse()));
-            }
-
-            catch (DbUpdateConcurrencyException ex)
-            {
-                _uow.ClearTracking();
-
-                _logger.LogWarning(ex, "A concurrency error was detected. " +
+                _logger.LogWarning("A concurrency error was detected. " +
                     "The booking status has already been changed. " +
                     "Booking request ID: {BookingId}, RoomID: {RoomId}",
                     cmd.BookingRequestId,
@@ -144,6 +130,17 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.Commands.Submit
 
                 var error = BookingError.BookingStatusAlreadyChange;
                 return Result<SubmitBookingResponse>.Conflict(error.Code, error.Message);
+            }
+
+            else
+            {
+                _logger.LogInformation("Saving the new status is successful. " +
+                    "Booking request ID: {BookingId} Status: {Status}.",
+                    existsBooking.Id.Value,
+                    existsBooking.Status.ToString());
+
+                return Result<SubmitBookingResponse>.Ok(ToResponse(
+                    existsBooking.EntityToReadModelResponse()));
             }
         }
 
