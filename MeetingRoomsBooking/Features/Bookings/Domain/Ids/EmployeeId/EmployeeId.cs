@@ -1,4 +1,4 @@
-﻿namespace MeetingRoomsBooking.Features.Bookings.Domain.Ids.UserId
+﻿namespace MeetingRoomsBooking.Features.Bookings.Domain.Ids.EmployeeId
 {
     public readonly record struct EmployeeId
     {
