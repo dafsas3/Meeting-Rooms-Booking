@@ -67,40 +67,42 @@ CQRS використовується для розділення читання
     "Default": "Host=localhost;Port=5432;Database=meeting_rooms_booking;Username=postgres;Password=your_password"
   }
 }
-
+```
 Замініть your_password на реальний пароль користувача PostgreSQL.
 
 ### Міграції
--Перейдіть у папку проєкту: cd MeetingRoomsBooking
--Застосуйте міграції: dotnet ef database update
+- Перейдіть у папку проєкту: cd MeetingRoomsBooking
+- Застосуйте міграції: dotnet ef database update
 
 ### Запуск API
 У папці проєкту: dotnet run
 
 Swagger буде доступний за адресою:
+```
 https://localhost:{port}/swagger
-
+```
 Актуальний порт буде виведений у консолі після запуску.
 
 ---
 
 ## Приклади API-запитів
 Усі права перевіряються через headers:
-X-EmployeeID: {guid}
-X-UserRole: Employee | Admin
+- X-EmployeeID: {guid}
+- X-UserRole: Employee | Admin
 
 BookingStatus
-0 = Draft
-1 = Submitted
-2 = Confirmed
-3 = Declined
-4 = Cancelled
+- 0 = Draft
+- 1 = Submitted
+- 2 = Confirmed
+- 3 = Declined
+- 4 = Cancelled
 
 BookingActorRole
-0 = Employee
-1 = Admin
+- 0 = Employee
+- 1 = Admin
 
 1. Створити кімнату
+```
 curl -X POST 'https://localhost:7227/api/rooms' \
   -H 'X-EmployeeID: f8385548-5f79-4f46-a4bb-12e966fed9c2' \
   -H 'X-UserRole: Admin' \
@@ -121,8 +123,10 @@ Response 201
   "location": "2-й поверх",
   "isActive": true
 }
+```
 
 2. Створити запит на бронювання
+```
 curl -X POST 'https://localhost:7227/api/bookings' \
   -H 'Idempotency-Key: e79a6fba-6029-4c98-b3c3-9f85a443a5cd' \
   -H 'X-EmployeeID: 2810d293-e85a-4596-8849-fa33ee2f6ba5' \
@@ -160,23 +164,30 @@ curl -X POST 'https://localhost:7227/api/bookings' \
     "5test@gmail.com"
   ]
 }
+```
 
 3. Відправити бронювання на розгляд
+```
 curl -X POST 'https://localhost:7227/api/bookings/13/submit' \
   -H 'X-EmployeeID: 2810d293-e85a-4596-8849-fa33ee2f6ba5' \
   -H 'X-UserRole: Employee'
+```
 
-4. Підтвердити бронювання
+5. Підтвердити бронювання
+```
 curl -X POST 'https://localhost:7227/api/bookings/13/confirm' \
   -H 'X-EmployeeID: 78768278-20d2-4be6-bcdd-dbda3a840634' \
   -H 'X-UserRole: Admin'
-
-  5. Отримати бронювання з історією
+```
+  7. Отримати бронювання з історією
+```
 curl -X GET 'https://localhost:7227/api/bookings/13' \
   -H 'X-EmployeeID: e967bc1e-12f4-460a-8409-b55c7bccac2b' \
   -H 'X-UserRole: Employee'
-
-6. Пошук бронювань з фільтрами
+```
+9. Пошук бронювань з фільтрами
+```
 curl -X GET 'https://localhost:7227/api/bookings?roomId=6&from=2026-04-28T12:00:36.438Z&to=2026-04-28T14:00:36.438Z&status=Confirmed' \
   -H 'X-EmployeeID: fafebd04-d287-4810-a7d9-9f7318ae7471' \
   -H 'X-UserRole: Employee'
+```
