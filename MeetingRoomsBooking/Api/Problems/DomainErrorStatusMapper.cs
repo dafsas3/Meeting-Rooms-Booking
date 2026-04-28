@@ -22,6 +22,7 @@
                 "INVALID_BOOKING_REQUEST_ID" => StatusCodes.Status400BadRequest,
                 "INVALID_EMPLOYEE_ID" => StatusCodes.Status400BadRequest,
                 "INVALID_BOOKING_STATUS_TRANSITION" => StatusCodes.Status409Conflict,
+                "INVALID_MISMATCH_EMPLOYEE_ID" => StatusCodes.Status403Forbidden,
 
                 _ => StatusCodes.Status400BadRequest
             };

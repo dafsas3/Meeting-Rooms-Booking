@@ -33,6 +33,17 @@ namespace MeetingRoomsBooking.Api.Middleware
                 await WriteProblemAsync(ctx, error, DomainErrorStatusMapper.Map(ex.Code));
             }
 
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.LogWarning(ex, "Unauthorized access.");
+
+                var error = new ApiError(
+                    Code: "INVALID_AUTH",
+                    Message: ex.Message);
+
+                await WriteProblemAsync(ctx, error, StatusCodes.Status401Unauthorized);
+            }
+
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unhandled exception occurred");

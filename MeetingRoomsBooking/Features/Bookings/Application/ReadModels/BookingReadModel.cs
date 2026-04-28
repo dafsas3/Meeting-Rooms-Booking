@@ -7,7 +7,7 @@ namespace MeetingRoomsBooking.Features.Bookings.Application.ReadModels
         public required int Id { get; set; }
         public required int RoomId { get; set; }
         public required Guid EmployeeId { get; set; }
-        public required Guid IdempotencyKey { get; set; }
+        public Guid IdempotencyKey { get; set; }
         public required DateTime StartedAtUtc { get; set; }
         public required DateTime EndAtUtc { get; set; }
         public required string Purpose { get; set; }
